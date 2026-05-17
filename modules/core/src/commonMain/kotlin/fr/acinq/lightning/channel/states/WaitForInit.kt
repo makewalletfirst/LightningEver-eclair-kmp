@@ -203,6 +203,20 @@ data object WaitForInit : ChannelState() {
                             }
                         }
                     }
+                    is Negotiating -> {
+                        // DEV-BYPASS: Re-publish and re-watch closing transactions on restart.
+                        // Without this, a channel stuck in Negotiating after restart never
+                        // observes its closing-tx confirmation and never transitions to Closed.
+                        val actions = buildList {
+                            addAll(unconfirmedFundingTxs.map { ChannelAction.Blockchain.PublishTx(it, ChannelAction.Blockchain.PublishTx.Type.FundingTx) })
+                            addAll(fundingTxWatches.map { ChannelAction.Blockchain.SendWatch(it) })
+                            cmd.state.publishedClosingTxs.forEach { closingTx ->
+                                add(ChannelAction.Blockchain.PublishTx(closingTx))
+                                add(ChannelAction.Blockchain.SendWatch(fr.acinq.lightning.blockchain.WatchConfirmed(cmd.state.channelId, closingTx.tx, staticParams.nodeParams.minDepthBlocks, fr.acinq.lightning.blockchain.WatchConfirmed.ClosingTxConfirmed)))
+                            }
+                        }
+                        Pair(Offline(cmd.state), actions)
+                    }
                     else -> {
                         val actions = buildList {
                             addAll(unconfirmedFundingTxs.map { ChannelAction.Blockchain.PublishTx(it, ChannelAction.Blockchain.PublishTx.Type.FundingTx) })

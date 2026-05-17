@@ -307,7 +307,19 @@ class Peer(
                 client.getFeerates()?.let { feerates ->
                     logger.info { "on-chain fees: $feerates" }
                     onChainFeeratesFlow.value = OnChainFeerates(feerates)
-                } ?: logger.error { "cannot retrieve feerates!" }
+                } ?: run {
+                    // DEV-BYPASS for BitEver: electrum cannot estimate fees on test chain.
+                    // Without a feerate value, currentOnChainFeerates() suspends forever and
+                    // ForceClose/MutualClose/spendLocalCurrent paths hang silently. Fall back
+                    // to the protocol minimum so close flows can complete.
+                    if (onChainFeeratesFlow.value == null) {
+                        val minFee = FeeratePerKw.MinimumFeeratePerKw
+                        logger.error { "cannot retrieve feerates! using minimum=$minFee as fallback" }
+                        onChainFeeratesFlow.value = OnChainFeerates(minFee, minFee, minFee, minFee)
+                    } else {
+                        logger.error { "cannot retrieve feerates! keeping previous=${onChainFeeratesFlow.value}" }
+                    }
+                }
             }
 
             when (client) {

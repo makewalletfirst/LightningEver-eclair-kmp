@@ -263,13 +263,20 @@ object Transactions {
             extraUtxos: Map<OutPoint, TxOut>
         ): Either<Throwable, Transaction> {
             val spentOutputs = buildSpentOutputs(extraUtxos)
+            // DEV-BYPASS: partialSigs[i] and publicNonces[i] must correspond to sortedKeys[i].
+            // Hardcoding [local, remote] breaks force-close whenever localKey > remoteKey.
+            val sortedKeys = Scripts.sort(listOf(localFundingPubkey, remoteFundingPubkey))
+            val (orderedPartialSigs, orderedNonces) = if (sortedKeys.first() == localFundingPubkey)
+                Pair(listOf(localSig.partialSig, remoteSig.partialSig), listOf(localSig.nonce, remoteSig.nonce))
+            else
+                Pair(listOf(remoteSig.partialSig, localSig.partialSig), listOf(remoteSig.nonce, localSig.nonce))
             return Musig2.aggregateTaprootSignatures(
-                listOf(localSig.partialSig, remoteSig.partialSig),
+                orderedPartialSigs,
                 tx,
                 inputIndex,
                 spentOutputs,
-                Scripts.sort(listOf(localFundingPubkey, remoteFundingPubkey)),
-                listOf(localSig.nonce, remoteSig.nonce),
+                sortedKeys,
+                orderedNonces,
                 null
             ).map {
                 val witness = Script.witnessKeyPathPay2tr(it)
