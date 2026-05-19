@@ -1,3 +1,5 @@
+브랜치: `main` (운영) / `260517_FIN` (스냅샷) / `260519_legacy` (레거시 스왑인 수정) <br>
+
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.10-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
 [![Maven Central](https://img.shields.io/maven-central/v/fr.acinq.lightning/lightning-kmp-core)](https://search.maven.org/search?q=g:fr.acinq.lightning%20a:lightning-kmp*)
 ![Github Actions](https://github.com/ACINQ/lightning-kmp/actions/workflows/test.yml/badge.svg)
