@@ -63,15 +63,23 @@ data class Negotiating(
                             is Either.Right -> {
                                 val (signedClosingTx, closingSig, nextLocalNonce) = result.value
                                 logger.debug { "signing remote mutual close transaction: ${signedClosingTx.tx}" }
-                                val nextState = this@Negotiating.copy(
-                                    remoteScript = cmd.message.closerScriptPubKey,
-                                    publishedClosingTxs = publishedClosingTxs + signedClosingTx,
-                                    localCloseeNonce = nextLocalNonce
+                                // [LightningEver E] mirror force-close UX: publish == done. Transition to Closed
+                                // immediately so the UI flips to "Closed" without waiting for chain confirmation.
+                                // WatchConfirmed below still runs as a background safety net (storage / reorg sanity).
+                                val newPublished = publishedClosingTxs + signedClosingTx
+                                val nextState = Closed(
+                                    Closing(
+                                        commitments = commitments,
+                                        waitingSinceBlock = waitingSinceBlock,
+                                        mutualCloseProposed = proposedClosingTxs.flatMap { it.all },
+                                        mutualClosePublished = newPublished
+                                    )
                                 )
                                 val actions = listOf(
                                     ChannelAction.Storage.StoreState(nextState),
                                     ChannelAction.Blockchain.PublishTx(signedClosingTx),
                                     ChannelAction.Blockchain.SendWatch(WatchConfirmed(channelId, signedClosingTx.tx, staticParams.nodeParams.minDepthBlocks, WatchConfirmed.ClosingTxConfirmed)),
+                                    ChannelAction.Storage.SetLocked(signedClosingTx.tx.txid),
                                     ChannelAction.Message.Send(closingSig)
                                 )
                                 Pair(nextState, actions)
@@ -89,11 +97,21 @@ data class Negotiating(
                             val signedClosingTx = result.value
                             logger.debug { "received signatures for local mutual close transaction: ${signedClosingTx.tx}" }
                             closeCommand?.replyTo?.complete(ChannelCloseResponse.Success(signedClosingTx.tx.txid, signedClosingTx.fee))
-                            val nextState = this@Negotiating.copy(publishedClosingTxs = publishedClosingTxs + signedClosingTx, remoteCloseeNonce = cmd.message.nextCloseeNonce)
+                            // [LightningEver E] same as ClosingComplete branch: flip to Closed immediately on publish.
+                            val newPublished = publishedClosingTxs + signedClosingTx
+                            val nextState = Closed(
+                                Closing(
+                                    commitments = commitments,
+                                    waitingSinceBlock = waitingSinceBlock,
+                                    mutualCloseProposed = proposedClosingTxs.flatMap { it.all },
+                                    mutualClosePublished = newPublished
+                                )
+                            )
                             val actions = listOf(
                                 ChannelAction.Storage.StoreState(nextState),
                                 ChannelAction.Blockchain.PublishTx(signedClosingTx),
                                 ChannelAction.Blockchain.SendWatch(WatchConfirmed(channelId, signedClosingTx.tx, staticParams.nodeParams.minDepthBlocks, WatchConfirmed.ClosingTxConfirmed)),
+                                ChannelAction.Storage.SetLocked(signedClosingTx.tx.txid),
                             )
                             Pair(nextState, actions)
                         }
