@@ -873,6 +873,35 @@ class Peer(
     fun registerFcmToken(token: String?) {
         val message = if (token == null) UnsetFCMToken else FCMToken(token)
         peerConnection?.send(message)
+        // [LightningEver] Also pre-register our swap-in addresses so the LSP can wake us up via
+        // FCM if an L1 deposit lands while the wallet is fully offline. Sent here so it piggy-backs
+        // on the same trigger as FCM token registration (every reconnect with a valid token).
+        if (token != null) registerSwapInAddresses()
+    }
+
+    /**
+     * [LightningEver] Send the wallet's currently-watched swap-in addresses to the LSP so that
+     * the LSP-side fcm-push-plugin can monitor L1 for deposits and trigger a wake-up push.
+     *
+     * Sends the legacy swap-in address (single) + the first N taproot swap-in addresses (gap-limit
+     * style). Idempotent — LSP overwrites its in-memory list per nodeId on every receive.
+     */
+    fun registerSwapInAddresses(taprootGapLimit: Int = 20) {
+        val wallet = swapInWallet ?: run {
+            logger.debug { "swap-in wallet unavailable; skipping address pre-registration" }
+            return
+        }
+        val keys = nodeParams.keyManager.swapInOnChainWallet
+        val addresses = buildList {
+            // legacy single address
+            add(wallet.legacySwapInAddress)
+            // taproot derivation, first taprootGapLimit indexes (covers address rotation while offline)
+            for (i in 0 until taprootGapLimit) {
+                add(keys.getSwapInProtocol(i).address(nodeParams.chain))
+            }
+        }.distinct()
+        logger.info { "pre-registering ${addresses.size} swap-in addresses with LSP" }
+        peerConnection?.send(SwapInAddressRegister(addresses))
     }
 
     /**

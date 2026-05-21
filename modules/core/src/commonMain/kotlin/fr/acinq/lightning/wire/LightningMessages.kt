@@ -89,6 +89,7 @@ interface LightningMessage {
                 CurrentFeeCredit.type -> CurrentFeeCredit.read(stream)
                 FCMToken.type -> FCMToken.read(stream)
                 UnsetFCMToken.type -> UnsetFCMToken
+                SwapInAddressRegister.type -> SwapInAddressRegister.read(stream)
                 DNSAddressRequest.type -> DNSAddressRequest.read(stream)
                 DNSAddressResponse.type -> DNSAddressResponse.read(stream)
                 PhoenixAndroidLegacyInfo.type -> PhoenixAndroidLegacyInfo.read(stream)
@@ -2056,6 +2057,39 @@ data class FCMToken(val token: ByteVector) : LightningMessage {
 object UnsetFCMToken : LightningMessage {
     override val type: Long get() = 35019
     override fun write(out: Output) {}
+}
+
+/**
+ * [LightningEver] Wallet → LSP pre-registration of swap-in addresses so the LSP can wake the wallet
+ * via FCM push when an L1 deposit lands while the wallet is offline. Sent on every reconnect
+ * (idempotent — LSP overwrites its in-memory list per nodeId).
+ *
+ * Wire: [u16 count] then for each address: [u16 length][length bytes ASCII bech32 address]
+ */
+data class SwapInAddressRegister(val addresses: List<String>) : LightningMessage {
+    override val type: Long get() = SwapInAddressRegister.type
+
+    override fun write(out: Output) {
+        LightningCodecs.writeU16(addresses.size, out)
+        for (addr in addresses) {
+            val bytes = addr.encodeToByteArray()
+            LightningCodecs.writeU16(bytes.size, out)
+            LightningCodecs.writeBytes(bytes, out)
+        }
+    }
+
+    companion object : LightningMessageReader<SwapInAddressRegister> {
+        const val type: Long = 35021
+
+        override fun read(input: Input): SwapInAddressRegister {
+            val count = LightningCodecs.u16(input)
+            val list = (0 until count).map {
+                val len = LightningCodecs.u16(input)
+                LightningCodecs.bytes(input, len).decodeToString()
+            }
+            return SwapInAddressRegister(list)
+        }
+    }
 }
 
 data class PhoenixAndroidLegacyInfo(

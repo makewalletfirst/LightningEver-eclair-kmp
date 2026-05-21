@@ -52,3 +52,23 @@ Please read the guidelines [here](https://github.com/ACINQ/lightning-kmp/blob/ma
 이 변경 없이도 SyncingChannelReestablish 흐름이 결국 정리해 주는 것으로 보이나, 사용자 입장에서 채널이 "Negotiating" 으로 보이는 대기 시간을 단축하는 안전망입니다.
 
 자세한 가이드는 LightningEver 프로젝트의 `260521OFFBOLT12.md` 참조.
+
+---
+
+## 260522_OFFSWAPIN 추가 변경 (이 브랜치)
+
+**오프라인 스왑인 입금 자동 감지** 를 위한 wallet 측 wire 메시지 + 자동 전송.
+
+### 변경 파일
+
+- `modules/core/src/commonMain/kotlin/fr/acinq/lightning/wire/LightningMessages.kt`
+  - 신규 사설 lightning message: `SwapInAddressRegister(addresses: List<String>)` (tag **35021**)
+  - Wire: `[u16 count] [u16 len][len bytes ASCII bech32 address]*`
+  - LSP 가 폰의 swap-in 주소들을 미리 알고 L1 모니터링 후 deposit 감지 시 wake-up push 를 보내기 위한 사전 등록 메시지
+- `modules/core/src/commonMain/kotlin/fr/acinq/lightning/io/Peer.kt`
+  - `registerFcmToken(token)` 안에서 `registerSwapInAddresses()` 도 함께 호출 — FCM 토큰 등록과 같은 타이밍 (reconnect 시) 에 swap-in 주소 일괄 등록
+  - 새 함수 `registerSwapInAddresses(taprootGapLimit: Int = 20)` — legacy 단일 주소 + taproot 첫 20 인덱스 (gap-limit 스타일) 의 swap-in 주소들을 모아 `SwapInAddressRegister` 메시지 발사
+
+### 운영 메모
+
+LSP 측 plugin 의 EventStream 구독은 BOLT12 offline 결제 force-close 재현 이슈로 **일시 비활성**. 폰이 본 메시지를 보내도 LSP 가 받아 publish 까지만 하고 처리는 안 함. 폰 측 코드는 안전 (불필요 송신일 뿐 부작용 없음). 자세한 가이드: LightningEver 프로젝트의 `260522FCM.md`.
