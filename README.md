@@ -27,7 +27,7 @@ The network operates on a **hub-and-spoke topology** centered around a single Ec
                   │  • Custom Bitcoin fork (Taproot, MuSig2, P2TR)              │
                   │  • Own consensus, mining, and chainhash:                     │
                   │    6fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d61... │
-                  │  • bitcoind RPC: 10.8.0.6:8334, ZMQ: 28332/28333            │
+                  │  • bitcoind RPC: 10.8.0.X:8334, ZMQ: 28332/28333            │
                   │  • Electrs Indexer: electrs.ever-chain.xyz:50001            │
                   └─────────────────────────────────────────────────────────────┘
                             ▲                              ▲                         ▲
@@ -38,10 +38,11 @@ The network operates on a **hub-and-spoke topology** centered around a single Ec
                   │     (BitEver Fork)     │  │   (LightningEver A)    │  │   (LightningEver B)    │
                   │   ─────────────────    │◀─┤   ──────────────────   │  │   ──────────────────   │
                   │   • Node ID: 0311fb... │  │   • uses lightning-kmp │  │   • uses lightning-kmp │
-                  │   • IP: 152.67.210.39  │  │   • LSP Peer: 0311fb.. │  │   • LSP Peer: 0311fb.. │
-                  │   • Port: 9735 (P2P)   │  └────────────────────────┘  └────────────────────────┘
-                  │   • Port: 8080 (REST)  │              │                            ▲
-                  └────────────────────────┘              └─────── Lightning P2P ──────┘
+                  │   • Host: eclair.      │  │   • LSP Peer: 0311fb.. │  │   • LSP Peer: 0311fb.. │
+                  │     ever-chain.xyz     │  └────────────────────────┘  └────────────────────────┘
+                  │   • Port: 9735 (P2P)   │              │                            ▲
+                  │   • Port: 8080 (REST)  │              └─────── Lightning P2P ──────┘
+                  └────────────────────────┘
 ```
 
 ### 1-2. Detailed Protocol Connections
