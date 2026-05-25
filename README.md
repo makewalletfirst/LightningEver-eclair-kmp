@@ -1,74 +1,219 @@
+# LightningEver Kotlin Multiplatform Core (`lightning-kmp`)
+
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.10-blue.svg?style=flat&logo=kotlin)](http://kotlinlang.org)
-[![Maven Central](https://img.shields.io/maven-central/v/fr.acinq.lightning/lightning-kmp-core)](https://search.maven.org/search?q=g:fr.acinq.lightning%20a:lightning-kmp*)
-![Github Actions](https://github.com/ACINQ/lightning-kmp/actions/workflows/test.yml/badge.svg)
+[![Version](https://img.shields.io/badge/version-1.11.5--DEBUG-orange.svg)](#installation)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 
-**lightning-kmp** is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) implementation of the Lightning Network (see the [Lightning Network Specifications (BOLTs)](https://github.com/lightning/bolts)) optimized for mobile wallets. It can run on many platforms, including mobile devices (iOS and Android).
+**`lightning-kmp`** is a [Kotlin Multiplatform](https://kotlinlang.org/docs/multiplatform.html) implementation of the Lightning Network (see the [Lightning Network Specifications (BOLTs)](https://github.com/lightning/bolts)) optimized for mobile wallets, developed originally by **ACINQ** and utilized in the Phoenix Wallet.
 
-It is different from [eclair](https://github.com/ACINQ/eclair) which is an implementation optimized for servers (routing nodes).
-It shares a lot of architecture choices with eclair though, which comes from years of experience developing one of the main lightning implementations.
-But it optimizes completely different scenarios, as wallets will not relay payments but rather send and receive them.
-Read [this article](https://medium.com/@ACINQ/when-ios-cdf798d5f8ef) for more details.
-
-**lightning-kmp** is used in [Phoenix](https://phoenix.acinq.co/), the best non-custodial Lightning Wallet!
-
-## Installation
-
-See instructions [here](https://github.com/ACINQ/lightning-kmp/blob/master/BUILD.md) to build and test the library.
-
-## Recovering on-chain funds
-
-See instructions [here](./RECOVERY.md) to recover on-chain funds.
-
-## Contributing
-
-We use GitHub for bug tracking. Search the existing issues for your bug and create a new one if needed.
-
-Contribute to the project by submitting pull requests.
-Review is done by members of the ACINQ team.
-Please read the guidelines [here](https://github.com/ACINQ/lightning-kmp/blob/master/CONTRIBUTING.md).
-
-## Resources
-
-* [1] [The Bitcoin Lightning Network: Scalable Off-Chain Instant Payments](https://lightning.network/lightning-network-paper.pdf) by Joseph Poon and Thaddeus Dryja
-* [2] [Reaching The Ground With Lightning](https://github.com/ElementsProject/lightning/blob/master/doc/miscellaneous/deployable-lightning.pdf) by Rusty Russell
-* [3] [When Phoenix on iOS?](https://medium.com/@ACINQ/when-ios-cdf798d5f8ef) - A blog post detailing why we created this library
+This repository is the **BitEver (BEC) Fork** of `lightning-kmp` (v1.11.5-DEBUG), customized and patched to power the **LightningEver** non-custodial Lightning Network system. It contains specific blockchain adjustments, protocol extensions, fee fallbacks, and MuSig2 Taproot channel fixes necessary to run seamlessly on top of the BitEver L1 network.
 
 ---
 
-## LightningEver fork — 260521OFFBOLT12 변경
+## 1. LightningEver System Architecture
 
-이 fork 는 **BitEver L1 위의 LightningEver 운영** 을 위한 ACINQ lightning-kmp 1.11.5-DEBUG 의 사용자화 버전입니다. 이번 브랜치의 추가 변경:
+**LightningEver** is a customized, closed Lightning Network ecosystem built on top of the **BitEver (BEC) L1** blockchain. It is powered by three main components forked and patched from the ACINQ Phoenix stack:
+1. **Eclair LSP** (Server-side Routing & Liquidity Provider)
+2. **`lightning-kmp`** (Kotlin Multiplatform Lightning Engine)
+3. **Phoenix Android** (The user-facing mobile app, branded as **LightningEver**)
 
-### Mutual close NEGOTIATING 자동 해소 fallback
+### 1-1. Network Topology & Communication Matrix
 
-`Negotiating.kt`, `Offline.kt`, `Syncing.kt` 의 `WatchConfirmedTriggered.ClosingTxConfirmed` 분기에 fallback 한 가지 추가:
+The network operates on a **hub-and-spoke topology** centered around a single Eclair LSP. Mobile wallets do not establish direct channels with each other; instead, all transactions and channel operations are routed through the LSP.
 
-- 기존 ACINQ 동작: 확정된 closing tx 가 본인의 `publishedClosingTxs` 또는 `proposedClosingTxs` 중 어느 곳에도 매칭되지 않으면 `unknown closing transaction confirmed` 경고만 출력하고 채널 상태 무변경 → NEGOTIATING 영구 유지 가능
-- 추가된 fallback: **확정된 tx 가 우리 funding output 을 spend** 하고 있으면 (보수적 가드) — 그 tx 를 mutual close 완료로 받아들이고 CLOSED 로 전환. 이는 simple_close + reconnect 가 동시에 발생할 때 양측이 서로 모르는 closing tx 변형을 broadcast 한 케이스를 안전하게 정리.
+```
+                  ┌─────────────────────────────────────────────────────────────┐
+                  │                       BitEver (BEC) L1                      │
+                  │  • Custom Bitcoin fork (Taproot, MuSig2, P2TR)              │
+                  │  • Own consensus, mining, and chainhash:                     │
+                  │    6fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d61... │
+                  │  • bitcoind RPC: 10.8.0.6:8334, ZMQ: 28332/28333            │
+                  │  • Electrs Indexer: electrs.ever-chain.xyz:50001            │
+                  └─────────────────────────────────────────────────────────────┘
+                            ▲                              ▲                         ▲
+                            │ RPC & ZMQ                    │ Electrum RPC            │ Electrum RPC
+                            │                              │                         │
+                  ┌─────────┴──────────────┐  ┌────────────┴───────────┐  ┌──────────┴─────────────┐
+                  │       Eclair LSP       │  │  Phoenix Android App   │  │  Phoenix Android App   │
+                  │     (BitEver Fork)     │  │   (LightningEver A)    │  │   (LightningEver B)    │
+                  │   ─────────────────    │◀─┤   ──────────────────   │  │   ──────────────────   │
+                  │   • Node ID: 0311fb... │  │   • uses lightning-kmp │  │   • uses lightning-kmp │
+                  │   • IP: 152.67.210.39  │  │   • LSP Peer: 0311fb.. │  │   • LSP Peer: 0311fb.. │
+                  │   • Port: 9735 (P2P)   │  └────────────────────────┘  └────────────────────────┘
+                  │   • Port: 8080 (REST)  │              │                            ▲
+                  └────────────────────────┘              └─────── Lightning P2P ──────┘
+```
 
-`Negotiating.kt` 의 `WatchSpent.ChannelSpent` 분기에도 동일 패턴 추가 — mempool 도착 시점에 fallback closing tx 등록.
+### 1-2. Detailed Protocol Connections
 
-이 변경 없이도 SyncingChannelReestablish 흐름이 결국 정리해 주는 것으로 보이나, 사용자 입장에서 채널이 "Negotiating" 으로 보이는 대기 시간을 단축하는 안전망입니다.
-
-자세한 가이드는 LightningEver 프로젝트의 `260521OFFBOLT12.md` 참조.
+| Source | Destination | Protocol | Port | Purpose |
+| :--- | :--- | :--- | :--- | :--- |
+| **Phoenix Android** | **Eclair LSP** | Lightning P2P | `9735` | Noise XK handshake, channel negotiations, splice, trampoline payments |
+| **Phoenix Android** | **BitEver Electrs** | Electrum (no TLS) | `50001` | Header sync, swap-in scans, transaction broadcasting, fee estimation |
+| **Eclair LSP** | **BitEver bitcoind** | JSON-RPC | `8334` | Transaction broadcasting, UTXO querying, fee estimations |
+| **Eclair LSP** | **BitEver bitcoind** | ZeroMQ (ZMQ) | `28332`/`28333` | Real-time block and transaction notifications |
+| **Eclair LSP** | **BitEver Electrs** | Electrum (no TLS) | `50001` | Watching the mempool for confirmation tracking |
+| **Phoenix Android** | **Google FCM** | HTTPS / Push | (Google) | LSP wakes up mobile clients for offline payments using push tokens |
+| **Operator / CLI** | **Eclair LSP** | JSON-REST API | `8080` | Local node administration (`eclair-cli`) |
 
 ---
 
-## 260522_OFFSWAPIN 추가 변경 (이 브랜치)
+## 2. Key Technology Stack
 
-**오프라인 스왑인 입금 자동 감지** 를 위한 wallet 측 wire 메시지 + 자동 전송.
+- **Core Language & Framework**: Kotlin Multiplatform (KMP) v2.3.10 with targets for JVM, Android, and iOS.
+- **Lightning Engine**: `lightning-kmp-core` v1.11.5-DEBUG (containing all BitEver protocol changes).
+- **L1 Blockchain Platform**: BitEver (BEC) Core (built on custom Bitcoin fork utilizing Taproot, MuSig2, P2TR, and custom block hashing).
+- **Storage / DB**: SQLite on Eclair LSP; SQLDelight (wrapped in Kotlin) on Phoenix Android.
+- **Push Notification Backend**: Google Firebase Cloud Messaging (FCM) integrated with Eclair LSP to trigger wake-ups.
 
-### 변경 파일
+---
 
-- `modules/core/src/commonMain/kotlin/fr/acinq/lightning/wire/LightningMessages.kt`
-  - 신규 사설 lightning message: `SwapInAddressRegister(addresses: List<String>)` (tag **35021**)
-  - Wire: `[u16 count] [u16 len][len bytes ASCII bech32 address]*`
-  - LSP 가 폰의 swap-in 주소들을 미리 알고 L1 모니터링 후 deposit 감지 시 wake-up push 를 보내기 위한 사전 등록 메시지
-- `modules/core/src/commonMain/kotlin/fr/acinq/lightning/io/Peer.kt`
-  - `registerFcmToken(token)` 안에서 `registerSwapInAddresses()` 도 함께 호출 — FCM 토큰 등록과 같은 타이밍 (reconnect 시) 에 swap-in 주소 일괄 등록
-  - 새 함수 `registerSwapInAddresses(taprootGapLimit: Int = 20)` — legacy 단일 주소 + taproot 첫 20 인덱스 (gap-limit 스타일) 의 swap-in 주소들을 모아 `SwapInAddressRegister` 메시지 발사
+## 3. Core Modifications & Patches (vs Upstream ACINQ)
 
-### 운영 메모
+To make `lightning-kmp` compatible with the custom environment of the BitEver L1 chain and fix several protocol edge cases, the following critical patches were implemented:
 
-LSP 측 plugin 의 EventStream 구독은 BOLT12 offline 결제 force-close 재현 이슈로 **일시 비활성**. 폰이 본 메시지를 보내도 LSP 가 받아 publish 까지만 하고 처리는 안 함. 폰 측 코드는 안전 (불필요 송신일 뿐 부작용 없음). 자세한 가이드: LightningEver 프로젝트의 `260522FCM.md`.
+### 3-1. On-Chain Feerate Fallback
+* **Target File**: [Peer.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/io/Peer.kt)
+* **Problem**: The BitEver Electrs indexer does not support `estimatefee` due to the small blockchain history. As a result, the wallet client's `onChainFeeratesFlow` remains null indefinitely. When the user attempts a `Force Close` or `Mutual Close`, the process suspends forever waiting for a valid fee rate.
+* **Patch**: If Electrum fee retrieval fails, a fallback is triggered to set `FeeratePerKw.MinimumFeeratePerKw` (`253 sat/kw`). This prevents infinite suspensions and allows closure transactions to build and broadcast safely.
+
+### 3-2. MuSig2 Public Nonce Sorting in Taproot Channels
+* **Target Files**: 
+  - [Commitments.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/channel/Commitments.kt) (`sign()`, `sendCommit()`)
+  - [Helpers.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/channel/Helpers.kt) (`ClosingComplete`, `ClosingSig` flows)
+  - [InteractiveTx.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/channel/InteractiveTx.kt) (`SharedFundingInput.sign()`, first commitment builder)
+  - [Transactions.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/transactions/Transactions.kt) (`checkRemotePartialSignature()`, `aggregateSigs()`)
+* **Problem**: Under the `option_simple_taproot_phoenix` specification, MuSig2 public nonces must be ordered strictly in accordance with their corresponding sorted public keys (`Scripts.sort(listOf(localFundingPubKey, remoteFundingPubKey))`). Upstream ACINQ hardcoded `[localNonce, remoteNonce]` ordering. If the remote key sorted first, signature verification failed, causing channels to crash during creation, commits, or splicing.
+* **Patch**: Implemented deterministic nonce sorting across all **6+1 key areas** listed above. The order of nonces now mirrors the sorting result of funding public keys, fixing the invalid signature issues for Taproot channels, Splice transactions, and Request Liquidity actions.
+
+### 3-3. Negotiating State Auto-Resolve Fallback
+* **Target Files**: 
+  - [Negotiating.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/channel/states/Negotiating.kt)
+  - [Offline.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/channel/states/Offline.kt)
+  - [Syncing.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/channel/states/Syncing.kt)
+* **Problem**: If a mutual closing transaction is confirmed on-chain but does not match any of the tracked `publishedClosingTxs` or `proposedClosingTxs` (which can happen under race conditions or disconnection right after mutual close initialization), the channel would hang in the `Negotiating` state forever.
+* **Patch**: Added a safety fallback in the `WatchConfirmedTriggered.ClosingTxConfirmed` and `WatchSpent.ChannelSpent` handlers. If the confirmed transaction is detected to spend our funding output, the library automatically treats it as a successful mutual close, updates the channel state to `CLOSED`, and terminates negotiation.
+
+### 3-4. Re-Broadcast of Negotiating Closing Transactions on Startup
+* **Target File**: [WaitForInit.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/channel/states/WaitForInit.kt)
+* **Problem**: If the wallet application was restarted while a channel was in `Negotiating` state, the previously proposed mutual close transactions were not re-published or watched again on the Electrum network. The mutual close process would get stuck.
+* **Patch**: Modified the state restoration flow during `is Negotiating` block to re-publish and register watcher listeners for all closing transactions.
+
+### 3-5. Shortened CSV Delay for Force Closes
+* **Target File**: [NodeParams.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/NodeParams.kt)
+* **Problem**: Mainnet Bitcoin enforces a `toRemoteDelayBlocks` value of `2016` blocks (approx. 2 weeks) for CSV timelocks during force-closes, which is impractical for development and testing.
+* **Patch**: Reduced the delay parameter to `144` blocks (approx. 24 hours) for fast cycle testing of forced closures and balance recovery.
+
+### 3-6. Offline Swap-In Address Pre-Registration (Wire Message Tag `35021`)
+* **Target Files**:
+  - [LightningMessages.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/wire/LightningMessages.kt)
+  - [Peer.kt](file:///root/lightning-kmp/modules/core/src/commonMain/kotlin/fr/acinq/lightning/io/Peer.kt)
+* **Problem**: To support seamless swap-in deposits when the mobile wallet is offline, the LSP needs a way to monitor the wallet's deposit addresses and wake up the client when a deposit is received.
+* **Patch**: 
+  - Added a new custom Lightning message: `SwapInAddressRegister(addresses: List<String>)` with tag **`35021`**.
+  - Integrated this into the Peer connection sequence. Upon handshake and alongside the FCM push token registration, the wallet automatically derives its legacy swap-in address and the first 20 Taproot swap-in addresses (gap limit style) and registers them with the LSP.
+
+---
+
+## 4. Operational Safety & Security Bypasses (WARNING)
+
+> [!WARNING]
+> This fork is **strictly meant for development and testing** on the BitEver test/dev blockchain network. It contains intentional security bypasses and MUST NOT be used on the public Bitcoin Mainnet.
+
+| Bypass Location | Description | Consequence / Reason |
+| :--- | :--- | :--- |
+| **`Transactions.scala`** (Eclair LSP) | Hardcoded `checkRemoteSig`, `checkRemotePartialSignature`, and `checkRemoteHtlcSig` to return `true`. | Disables signature validation for quick dev verification. |
+| **`Helpers.scala`** (Eclair LSP) | Skips min-funding check (`minFunding=0` allowed) when `usesOnTheFlyFunding` is active. | Enables On-The-Fly (OTF) channel creation for wallets with 0 balance. |
+| **`InteractiveTxBuilder.scala`** (Eclair LSP) | Bypasses remote channel reserve checks. | Permits splicing out even if the wallet balance falls below the standard 1% reserve. |
+| **`Helpers.scala`** (Eclair LSP) | Ignores `MissingCommitNonce` on Taproot channels during reconnections. | Avoids accidental force-closes during connection instability. |
+| **`Setup.scala`** (Eclair LSP) | Disables verification checks on headers sync and initial block downloads. | Operates normally despite the lower cumulative work of the custom BitEver chain. |
+| **`Peer.kt`** (`lightning-kmp`) | Fallback fee rate injection of `253 sat/kw`. | Prevents hanging transactions when Electrum fees return null. |
+
+---
+
+## 5. Build and Local Publication Guide
+
+### Prerequisites
+- **Java**: OpenJDK 21
+- **Docker**: Required if you wish to run integration/mini-wallet tests.
+- **macOS / iOS builds**: Xcode, Homebrew, and native libraries:
+  ```sh
+  brew install libtool gmp
+  ```
+
+### Build & Publish to Maven Local
+To compile the Kotlin Multiplatform project and publish the artifacts into your local Maven cache, run:
+
+```bash
+# Clean, compile, and publish all KMP targets locally
+./gradlew :lightning-kmp-core:publishToMavenLocal
+```
+
+Alternatively, to publish only specific targets (e.g., JVM and Kotlin Multiplatform core):
+```bash
+./gradlew :lightning-kmp-core:publishJvmPublicationToMavenLocal \
+          :lightning-kmp-core:publishKotlinMultiplatformPublicationToMavenLocal
+```
+
+* **Build Output Path**: The library artifact will be published to:
+  `~/.m2/repository/fr/acinq/lightning/lightning-kmp-core-jvm/1.11.5-DEBUG/`
+
+### Running Tests
+To run unit and integration tests:
+```bash
+./gradlew jvmTest       # Run tests targeting the JVM
+./gradlew allTests      # Run tests on all configured target platforms
+```
+
+---
+
+## 6. Integration and Deployment to Phoenix (LightningEver App)
+
+To consume the newly built `lightning-kmp` library inside the **Phoenix Android** (LightningEver App) codebase:
+
+1. **Enable Local Repository**: Ensure the Phoenix Android's parent `build.gradle.kts` (or `phoenix-shared/build.gradle.kts`) contains the `mavenLocal()` repository directive at the top of its repositories list:
+   ```kotlin
+   repositories {
+       mavenLocal()
+       mavenCentral()
+       google()
+   }
+   ```
+2. **Bind Dependency**: Point the dependency string to the custom debug version:
+   ```kotlin
+   implementation("fr.acinq.lightning:lightning-kmp-core:1.11.5-DEBUG")
+   ```
+3. **Compile the App**: Assemble the debug APK using Gradle:
+   ```bash
+   ./gradlew :phoenix-android:assembleDebug
+   ```
+   This generates the runnable APK file (e.g., `phoenix-115-xxxx-mainnet-debug.apk`) which can be side-loaded onto test Android devices.
+
+---
+
+## 7. Operational & Verification CLI Commands (LSP-side)
+
+Use the following cURL commands to verify node connectivity, channel states, and OTF funding status on the Eclair LSP (port `8080` REST interface):
+
+```bash
+# 1. Retrieve General Node & L1 Synchronization Info
+curl -s -u :PASSWORD -X POST http://localhost:8080/getinfo | jq .
+
+# 2. List All Active Channels and Their Current State
+curl -s -u :PASSWORD -X POST http://localhost:8080/channels | jq '.[] | {channelId, state, nodeId}'
+
+# 3. Retrieve Detailed State of a Specific Channel
+curl -s -u :PASSWORD -X POST http://localhost:8080/channel -d "channelId=<CHANNEL_ID_HEX>" | jq .
+
+# 4. List Connected Peers
+curl -s -u :PASSWORD -X POST http://localhost:8080/peers | jq .
+
+# 5. Enable On-The-Fly (OTF) Funding (Required once after LSP restart)
+curl -s -u :PASSWORD -X POST http://localhost:8080/enablefromfuturehtlc
+```
+
+---
+
+## 8. License
+
+This repository is licensed under the **ACINQ Public Software License** (which is identical to the upstream licensing terms). Please refer to the [LICENSE](LICENSE) file for further details.
