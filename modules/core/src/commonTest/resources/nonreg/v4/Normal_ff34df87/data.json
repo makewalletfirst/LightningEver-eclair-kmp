@@ -1,0 +1,654 @@
+{
+    "type": "fr.acinq.lightning.channel.states.Normal",
+    "commitments": {
+        "channelParams": {
+            "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+            "channelConfig": [
+                "funding_pubkey_based_channel_keypath"
+            ],
+            "channelFeatures": [
+                "option_static_remotekey",
+                "option_anchor_outputs",
+                "option_dual_fund"
+            ],
+            "localParams": {
+                "nodeId": "037108815ff0128f7ed22640485c226d9ad64a9fd6d8b41b6623565aed6b34812c",
+                "fundingKeyPath": "m/2093147472'/300721091/1090541724'/704900034'/1996474647/661362293'/847933381'/1399885939'/1'",
+                "isChannelOpener": true,
+                "paysCommitTxFees": true,
+                "defaultFinalScriptPubKey": "001405e0104aa726e34ff5cd3a6320d05c0862b5b01c",
+                "features": {
+                    "activated": {
+                        "option_data_loss_protect": "Optional",
+                        "var_onion_optin": "Mandatory",
+                        "option_static_remotekey": "Mandatory",
+                        "payment_secret": "Mandatory",
+                        "basic_mpp": "Optional",
+                        "option_support_large_channel": "Optional",
+                        "option_anchor_outputs": "Mandatory",
+                        "option_route_blinding": "Optional",
+                        "option_shutdown_anysegwit": "Mandatory",
+                        "option_dual_fund": "Mandatory",
+                        "option_quiescence": "Mandatory",
+                        "option_provide_storage": "Optional",
+                        "option_channel_type": "Mandatory",
+                        "option_simple_close": "Mandatory",
+                        "wake_up_notification_provider": "Optional",
+                        "trampoline_payment_experimental": "Optional",
+                        "splice_experimental": "Optional",
+                        "on_the_fly_funding": "Optional"
+                    },
+                    "unknown": []
+                }
+            },
+            "remoteParams": {
+                "nodeId": "0362b19a83930389b4468be40308efb3f352b23142ae25e6aba0465a8220f95b06",
+                "revocationBasepoint": "0361dd1f9ce279e691e99a38d3c2f714b5158354ea19e60872c97f131c3ac976a1",
+                "paymentBasepoint": "025976dee047bad7f29115a6d636b85ca391862086f95f3dfef9c6a406c091de1d",
+                "delayedPaymentBasepoint": "023d9385b6e0106f3d211a4d285c7774c0593f39a1eac610d9e1ed5b47ef931214",
+                "htlcBasepoint": "033395c7a7e896638a309f732a30caa82e8cd76d40c6deffa67e50054002e83f7d",
+                "features": {
+                    "activated": {
+                        "option_data_loss_protect": "Optional",
+                        "var_onion_optin": "Mandatory",
+                        "option_static_remotekey": "Mandatory",
+                        "payment_secret": "Mandatory",
+                        "basic_mpp": "Optional",
+                        "option_support_large_channel": "Optional",
+                        "option_anchor_outputs": "Optional",
+                        "option_route_blinding": "Optional",
+                        "option_shutdown_anysegwit": "Mandatory",
+                        "option_dual_fund": "Mandatory",
+                        "option_quiescence": "Mandatory",
+                        "option_channel_type": "Mandatory",
+                        "option_simple_close": "Mandatory",
+                        "zero_reserve_channels": "Optional",
+                        "wake_up_notification_client": "Optional",
+                        "trampoline_payment_experimental": "Optional",
+                        "splice_experimental": "Optional",
+                        "on_the_fly_funding": "Optional",
+                        "funding_fee_credit": "Optional"
+                    },
+                    "unknown": []
+                }
+            },
+            "channelFlags": {
+                "announceChannel": false,
+                "nonInitiatorPaysCommitFees": false
+            }
+        },
+        "changes": {
+            "localChanges": {
+                "proposed": [],
+                "signed": [],
+                "acked": []
+            },
+            "remoteChanges": {
+                "proposed": [],
+                "acked": [],
+                "signed": []
+            },
+            "localNextHtlcId": 6,
+            "remoteNextHtlcId": 6
+        },
+        "active": [
+            {
+                "fundingTxIndex": 0,
+                "fundingInput": "ac7d55d35d92e43e5066ca7d404ba4e0236d85dabae406c0a5da7926600443ba:0",
+                "fundingAmount": 1000000,
+                "remoteFundingPubkey": "03ced98078c4a4cb054c071e90ad74dcfa4ec4235f7c43c5e3b50b84d75f58855e",
+                "localFundingStatus": {
+                    "status": "confirmed",
+                    "txId": "ac7d55d35d92e43e5066ca7d404ba4e0236d85dabae406c0a5da7926600443ba"
+                },
+                "remoteFundingStatus": {
+                    "status": "not-locked"
+                },
+                "commitmentFormat": {
+                    "rfcName": "anchor_outputs"
+                },
+                "localCommitParams": {
+                    "dustLimit": 1100,
+                    "maxHtlcValueInFlightMsat": 1500000000,
+                    "htlcMinimum": 100,
+                    "toSelfDelay": 144,
+                    "maxAcceptedHtlcs": 100
+                },
+                "localCommit": {
+                    "index": 1,
+                    "spec": {
+                        "htlcsIn": [
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 0,
+                                "amountMsat": 6000000,
+                                "paymentHash": "e72f94f6c8f4e1031dd3058135c2f41e876dbc369bba1f7a4be1af65fd2d8457",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 1,
+                                "amountMsat": 6000000,
+                                "paymentHash": "0315d713b5ed37e3056f97414470693a6af57dd928583abb8fe2a1318b1f9c8f",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 2,
+                                "amountMsat": 6000000,
+                                "paymentHash": "fe6faf9ea5b5cdab26159d2a6b1444553d8a2d57e76ed8dbbcba3b14009ee77f",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 3,
+                                "amountMsat": 6000000,
+                                "paymentHash": "f1118c1cb106071d63ec19a3e25d533f04cac3753e9b815e499378480a534dc7",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 4,
+                                "amountMsat": 6000000,
+                                "paymentHash": "2b08af5116e486d1b3008ca77d7fc7f2ad18ab50ddc2fbbd0175dbb25fbef4a0",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 5,
+                                "amountMsat": 6000000,
+                                "paymentHash": "a42decc81faaf2ecd7d6910f75f2861e6c07ab0b6b9288f8e74f05ddf829908a",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            }
+                        ],
+                        "htlcsOut": [
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 0,
+                                "amountMsat": 6000000,
+                                "paymentHash": "25eae83f9e59143a324c99f3790c4f0f9d5ac272e62d41319345c67ad3588412",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 1,
+                                "amountMsat": 6000000,
+                                "paymentHash": "de3f9aad80e787fbc114837656b216d5d5e818ee0bbe81bf4e5bcce6d57ecc05",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 2,
+                                "amountMsat": 6000000,
+                                "paymentHash": "8ccb436ca32dadb62a556444ebc64c4dec80ae5ed9fbfc690a53ca22d14dfee1",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 3,
+                                "amountMsat": 6000000,
+                                "paymentHash": "6f56591d76cf1c5410706673076e08e43e17c9f424e7bae0fd9589eddc8dea4e",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 4,
+                                "amountMsat": 6000000,
+                                "paymentHash": "5ac8067ef2ad1825ff2d2ad66c6d8e2a401c57767afcf7d47f4f9fa8b48d119e",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 5,
+                                "amountMsat": 6000000,
+                                "paymentHash": "6c54bf28b9f1c5c269e3a602b4d08a04db6a8416fea1da79eff16e3c2e21a000",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            }
+                        ],
+                        "feerate": 5000,
+                        "toLocal": 814000000,
+                        "toRemote": 114000000
+                    },
+                    "txId": "0c74f8e6e0749a7815952ceedf0ee33f8f6e3298cf86eb83e45bf0f875a73044",
+                    "remoteSig": {
+                        "sig": "bd71081f466344fb018eceabab814bdaf9d34df35327a43560677a13b96bbc3f1669df9f5075854a415a6ebd32bcf1e6fe482510930da7abfc15f319f29e7f00",
+                        "nonce": null
+                    },
+                    "htlcRemoteSigs": [
+                        "47f187dab4904e505d7eecb6fa0ab9d1dd3ae4194a215d73c0ed3310bba02e3455dc93c903bee48ed0613431dd771030e0ba43007300570463934cdda090b7c4",
+                        "67afdc3b9bfc9ed2d0c2ff2c29d74e155f404a636d6257de8d576d011bb241a71e31f4b18a5370d5056595f71a40e07a27d68bd09b9724faf61e4fa0baebcc43",
+                        "c0c6a5c5c5df836e3f10e7719a01641fcb017c704a28f5c7951da681f32f4827182f0ccdfd3722d0031449803b1f3268290b0854cdaf616ab4ee696f13eadfd3",
+                        "1caddc268adfcad2dcdb40a8b9f87a1a46b9c53117b014a9438173e99026f31234ba7f594bfe64b3c6ba1faed65331bb5329e9598177d0b306ea781f785825ae",
+                        "939c90c63a3a53c1b0b0cefce54be2473cd0f31d540583407cc9966e4856d6236d880f515d2a93f934a494bbf6b4e9e7bd0de9b0b21e4eaee42bd2db8c91b2a4",
+                        "f6ab52d3a157f2bee88e39966684ba0d41eb89965fc0bb07d559518da66a758f17c36e1a157b71fc692867dfbe263a4862716d527b1ff8110a2f349bcd07dc6b",
+                        "b6051fe473ff1598eff19b273acfd621ae4d64df8c1aabd4b4732cdb18a1d7e363dc5b0e2173b03594cba4b60d44cdc2234a793bc038084aba78de787571967a",
+                        "e27bdc941ca50886eaaa977deff3ffee17d17536daa1fcefafb4051ea5faa0035483a11f357afae6f5822812ef33630f2ef9ebf7c5a3656dabf5b406cd641a27",
+                        "05ba8b686a11ef82d0957f50564c0fe98eb3cc1f0e6a2cd763ab1c3a6d82aa8350e566b7d3db07ef8ecb72c134782ff836309d6d78581b323b42e42c73d6f80c",
+                        "b1896d2e72deda37e57b78bc867958cd02a7e39469409ab6f473b44e3d3fb1796d0d8ffd6911c60a71dcc849e78145a8481ef736a49d9bbace328577e0e42015",
+                        "690c9dae2624e928a3846a42ca586bd0fca88be694be75e6b42a595c4b7607220a83dbb738561b1450fc6e73571b974bbbcbbeab3af4248c4dbcb3fff4aca021",
+                        "6faddd6f6ff4772c55c3bfc6ea1a6449ce1843f9001e7d6d41064c5c663b7fad0b26acff54805aa9cc44ac1bfe6ef223ff15c3698fe552505e28e49bcacde64e"
+                    ]
+                },
+                "remoteCommitParams": {
+                    "dustLimit": 1000,
+                    "maxHtlcValueInFlightMsat": 1500000000,
+                    "htlcMinimum": 1000,
+                    "toSelfDelay": 144,
+                    "maxAcceptedHtlcs": 100
+                },
+                "remoteCommit": {
+                    "index": 2,
+                    "spec": {
+                        "htlcsIn": [
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 0,
+                                "amountMsat": 6000000,
+                                "paymentHash": "25eae83f9e59143a324c99f3790c4f0f9d5ac272e62d41319345c67ad3588412",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 1,
+                                "amountMsat": 6000000,
+                                "paymentHash": "de3f9aad80e787fbc114837656b216d5d5e818ee0bbe81bf4e5bcce6d57ecc05",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 2,
+                                "amountMsat": 6000000,
+                                "paymentHash": "8ccb436ca32dadb62a556444ebc64c4dec80ae5ed9fbfc690a53ca22d14dfee1",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 3,
+                                "amountMsat": 6000000,
+                                "paymentHash": "6f56591d76cf1c5410706673076e08e43e17c9f424e7bae0fd9589eddc8dea4e",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 4,
+                                "amountMsat": 6000000,
+                                "paymentHash": "5ac8067ef2ad1825ff2d2ad66c6d8e2a401c57767afcf7d47f4f9fa8b48d119e",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 5,
+                                "amountMsat": 6000000,
+                                "paymentHash": "6c54bf28b9f1c5c269e3a602b4d08a04db6a8416fea1da79eff16e3c2e21a000",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            }
+                        ],
+                        "htlcsOut": [
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 0,
+                                "amountMsat": 6000000,
+                                "paymentHash": "e72f94f6c8f4e1031dd3058135c2f41e876dbc369bba1f7a4be1af65fd2d8457",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 1,
+                                "amountMsat": 6000000,
+                                "paymentHash": "0315d713b5ed37e3056f97414470693a6af57dd928583abb8fe2a1318b1f9c8f",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 2,
+                                "amountMsat": 6000000,
+                                "paymentHash": "fe6faf9ea5b5cdab26159d2a6b1444553d8a2d57e76ed8dbbcba3b14009ee77f",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 3,
+                                "amountMsat": 6000000,
+                                "paymentHash": "f1118c1cb106071d63ec19a3e25d533f04cac3753e9b815e499378480a534dc7",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 4,
+                                "amountMsat": 6000000,
+                                "paymentHash": "2b08af5116e486d1b3008ca77d7fc7f2ad18ab50ddc2fbbd0175dbb25fbef4a0",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 5,
+                                "amountMsat": 6000000,
+                                "paymentHash": "a42decc81faaf2ecd7d6910f75f2861e6c07ab0b6b9288f8e74f05ddf829908a",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            }
+                        ],
+                        "feerate": 5000,
+                        "toLocal": 114000000,
+                        "toRemote": 814000000
+                    },
+                    "txid": "aca7730b27d9c28ddfce9fa9cfcf4759d87cd6be3be516b1e6628ccbde382d74",
+                    "remotePerCommitmentPoint": "03ae47396292a6c6866b3a7a3dc31154efab7f24ef0d07925d2830266fb6ff5606"
+                },
+                "nextRemoteCommit": null
+            }
+        ],
+        "inactive": [],
+        "payments": {
+            "0": "6d31709a-f240-46c5-98aa-b0a517816264",
+            "1": "b85fa2ae-c326-47a7-a7dd-bd437b4b1ad2",
+            "2": "051b504f-e5ac-45b0-b736-50fb546c6e57",
+            "3": "4c9c744f-0515-479f-aec1-328a207eec4b",
+            "4": "b239cf09-d76a-416b-a610-4dba97ba681f",
+            "5": "23dd2ae3-c53b-4866-8ef2-4857b9736d4f"
+        },
+        "remoteNextCommitInfo": {
+            "left": null,
+            "right": "037bea64f1601acf27b6b362618d51eead4ad3fa22794ff4bc7b9e94230c9dd872"
+        },
+        "remotePerCommitmentSecrets": "<redacted>"
+    },
+    "remoteNextCommitNonces": {},
+    "shortChannelId": "42x0x0",
+    "channelUpdate": {
+        "signature": "6f5237d843822495a739a69f8dc75755940490826264170a707523c5dbee8f423d14ea56f7b2d2a07dfbc37b18d27fe301550d047fc109a3638e183c05b1edc7",
+        "chainHash": "06226e46111a0b59caaf126043eb5bbf28c34f3a5e332a1fc7b2b73cf188910f",
+        "shortChannelId": "42x0x0",
+        "timestampSeconds": 1751983206,
+        "messageFlags": 1,
+        "channelFlags": 1,
+        "cltvExpiryDelta": 144,
+        "htlcMinimumMsat": 1000,
+        "feeBaseMsat": 100,
+        "feeProportionalMillionths": 10,
+        "htlcMaximumMsat": 1000000000
+    },
+    "remoteChannelUpdate": null,
+    "spliceStatus": {
+        "status": "WaitingForSigs",
+        "waitingForSigs": {
+            "session": {
+                "fundingParams": {
+                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                    "isInitiator": true,
+                    "localContribution": -282,
+                    "remoteContribution": 0,
+                    "sharedInput": {
+                        "outPoint": "ac7d55d35d92e43e5066ca7d404ba4e0236d85dabae406c0a5da7926600443ba:0",
+                        "amount": 1000000
+                    },
+                    "remoteFundingPubkey": "03adb09c35563b342c924c2eab5a86789f9321c8dbbd351982cab0ec4c724de5d9",
+                    "localOutputs": [
+                        {
+                            "amount": 50000,
+                            "publicKeyScript": "00148948b4526e08b8166d8f2a14e0ceab30d5a70160"
+                        }
+                    ],
+                    "commitmentFormat": {
+                        "rfcName": "anchor_outputs"
+                    },
+                    "lockTime": 400000,
+                    "dustLimit": 1100,
+                    "targetFeerate": 253
+                },
+                "fundingTxId": "b278d58353fe5456eee48beb4a922e867d791d822e16e2c0a3ca2d5945eeee4a",
+                "localCommit": {
+                    "left": {
+                        "index": 1,
+                        "spec": {
+                            "htlcsIn": [
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 0,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "e72f94f6c8f4e1031dd3058135c2f41e876dbc369bba1f7a4be1af65fd2d8457",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                },
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 1,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "0315d713b5ed37e3056f97414470693a6af57dd928583abb8fe2a1318b1f9c8f",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                },
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 2,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "fe6faf9ea5b5cdab26159d2a6b1444553d8a2d57e76ed8dbbcba3b14009ee77f",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                },
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 3,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "f1118c1cb106071d63ec19a3e25d533f04cac3753e9b815e499378480a534dc7",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                },
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 4,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "2b08af5116e486d1b3008ca77d7fc7f2ad18ab50ddc2fbbd0175dbb25fbef4a0",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                },
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 5,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "a42decc81faaf2ecd7d6910f75f2861e6c07ab0b6b9288f8e74f05ddf829908a",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                }
+                            ],
+                            "htlcsOut": [
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 0,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "25eae83f9e59143a324c99f3790c4f0f9d5ac272e62d41319345c67ad3588412",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                },
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 1,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "de3f9aad80e787fbc114837656b216d5d5e818ee0bbe81bf4e5bcce6d57ecc05",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                },
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 2,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "8ccb436ca32dadb62a556444ebc64c4dec80ae5ed9fbfc690a53ca22d14dfee1",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                },
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 3,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "6f56591d76cf1c5410706673076e08e43e17c9f424e7bae0fd9589eddc8dea4e",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                },
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 4,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "5ac8067ef2ad1825ff2d2ad66c6d8e2a401c57767afcf7d47f4f9fa8b48d119e",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                },
+                                {
+                                    "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                    "id": 5,
+                                    "amountMsat": 6000000,
+                                    "paymentHash": "6c54bf28b9f1c5c269e3a602b4d08a04db6a8416fea1da79eff16e3c2e21a000",
+                                    "cltvExpiry": 400144,
+                                    "onionRoutingPacket": "<redacted>"
+                                }
+                            ],
+                            "feerate": 5000,
+                            "toLocal": 813718000,
+                            "toRemote": 114000000
+                        },
+                        "txId": "bbaf3ce132cf2dd1526e1312a134c3dc34bcac2f7d5176adb6fd457c9cdf3278"
+                    },
+                    "right": null
+                },
+                "remoteCommit": {
+                    "index": 2,
+                    "spec": {
+                        "htlcsIn": [
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 0,
+                                "amountMsat": 6000000,
+                                "paymentHash": "25eae83f9e59143a324c99f3790c4f0f9d5ac272e62d41319345c67ad3588412",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 1,
+                                "amountMsat": 6000000,
+                                "paymentHash": "de3f9aad80e787fbc114837656b216d5d5e818ee0bbe81bf4e5bcce6d57ecc05",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 2,
+                                "amountMsat": 6000000,
+                                "paymentHash": "8ccb436ca32dadb62a556444ebc64c4dec80ae5ed9fbfc690a53ca22d14dfee1",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 3,
+                                "amountMsat": 6000000,
+                                "paymentHash": "6f56591d76cf1c5410706673076e08e43e17c9f424e7bae0fd9589eddc8dea4e",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 4,
+                                "amountMsat": 6000000,
+                                "paymentHash": "5ac8067ef2ad1825ff2d2ad66c6d8e2a401c57767afcf7d47f4f9fa8b48d119e",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 5,
+                                "amountMsat": 6000000,
+                                "paymentHash": "6c54bf28b9f1c5c269e3a602b4d08a04db6a8416fea1da79eff16e3c2e21a000",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            }
+                        ],
+                        "htlcsOut": [
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 0,
+                                "amountMsat": 6000000,
+                                "paymentHash": "e72f94f6c8f4e1031dd3058135c2f41e876dbc369bba1f7a4be1af65fd2d8457",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 1,
+                                "amountMsat": 6000000,
+                                "paymentHash": "0315d713b5ed37e3056f97414470693a6af57dd928583abb8fe2a1318b1f9c8f",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 2,
+                                "amountMsat": 6000000,
+                                "paymentHash": "fe6faf9ea5b5cdab26159d2a6b1444553d8a2d57e76ed8dbbcba3b14009ee77f",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 3,
+                                "amountMsat": 6000000,
+                                "paymentHash": "f1118c1cb106071d63ec19a3e25d533f04cac3753e9b815e499378480a534dc7",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 4,
+                                "amountMsat": 6000000,
+                                "paymentHash": "2b08af5116e486d1b3008ca77d7fc7f2ad18ab50ddc2fbbd0175dbb25fbef4a0",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            },
+                            {
+                                "channelId": "ff34df87686094c967bdbd77601a201306d08c857600d75681c919dc74f4cee8",
+                                "id": 5,
+                                "amountMsat": 6000000,
+                                "paymentHash": "a42decc81faaf2ecd7d6910f75f2861e6c07ab0b6b9288f8e74f05ddf829908a",
+                                "cltvExpiry": 400144,
+                                "onionRoutingPacket": "<redacted>"
+                            }
+                        ],
+                        "feerate": 5000,
+                        "toLocal": 114000000,
+                        "toRemote": 813718000
+                    },
+                    "txid": "1330352408b6623e8be6c28658d1437cc964d893a7157112e5544e902ce917a7",
+                    "remotePerCommitmentPoint": "03ae47396292a6c6866b3a7a3dc31154efab7f24ef0d07925d2830266fb6ff5606"
+                }
+            },
+            "liquidityPurchase": null,
+            "origins": []
+        }
+    },
+    "localShutdown": null,
+    "remoteShutdown": null,
+    "closeCommand": null,
+    "localCloseeNonce": null
+}
