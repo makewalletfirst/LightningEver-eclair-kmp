@@ -1,0 +1,34 @@
+name: Kotlin KMP Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev
+
+      - name: Clone and Install bitcoin-kmp (Dependency)
+        run: |
+          git clone https://github.com/ACINQ/bitcoin-kmp.git
+          cd bitcoin-kmp
+          # 'test' 대신 'check'를 제외하는 것이 멀티플랫폼 프로젝트에서 안전합니다.
+          ./gradlew publishToMavenLocal -x check
+          cd ..
+
+      - name: Build eclair-kmp (JVM Target)
+        run: |
+          # 여기서도 존재하지 않는 'test' 제외 대신 'check'와 'allTests'를 제외합니다.
+          ./gradlew :lightning-kmp-core:jvmJar -x check -x allTests
